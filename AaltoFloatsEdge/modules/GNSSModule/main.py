@@ -20,13 +20,22 @@ import pynmea2
 import serial
 import pyudev
 
-
 # for example GPS vendor and device ublox GPS receiver
-# could be something else as well
-GPS_DEVICE_VENDOR = '1546'
-GPS_DEVICE_ID = '01a8'
+GPS_DEVICE_VENDOR_UBLOX = '1546'
+GPS_DEVICE_ID_UBLOX = '01a8'
 
+# gstar
+GPS_DEVICE_VENDOR_GSTAR = '067b'
+GPS_DEVICE_ID_GSTAR = '2303'
+GSTAR_BAUDRATE = 4800
+
+# gps setting
+GPS_DEVICE_VENDOR = GPS_DEVICE_VENDOR_GSTAR
+GPS_DEVICE_ID = GPS_DEVICE_ID_GSTAR
+GPS_BAUDRATE = GSTAR_BAUDRATE
 GPS_SENDING_FREQUENCY = 600
+GPS_USB_PORT = "/dev/ttyUSB0"
+
 FLOAT_SERIAL_NUMBER = ""
 TWIN_CALLBACKS = 0
 
@@ -60,7 +69,6 @@ def list_devices(vid=None, pid=None):
         if is_usb_serial(device, vid= vid,  pid = pid):
             devs.append(device.device_node)
     return devs
-
 
 async def main():
     global FLOAT_SERIAL_NUMBER
@@ -156,7 +164,7 @@ async def main():
                     time.sleep(10)
 
         # define port for GPS USB module
-        gps_port = "/dev/ttyGPS"
+        gps_port = GPS_USB_PORT
         GPS_PORTS = list_devices(GPS_DEVICE_VENDOR, GPS_DEVICE_ID)
         print(GPS_PORTS)
         if GPS_PORTS != []:
@@ -166,7 +174,7 @@ async def main():
             print('NO RIGHT GPS DEVICE FOUND')
 
         # GPS receiver
-        gps_ser = serial.Serial(gps_port, baudrate=9600, timeout=0.5)
+        gps_ser = serial.Serial(gps_port, baudrate=GPS_BAUDRATE, timeout=0.5)
 
         # Schedule task for C2D Listener
         listeners = asyncio.gather(receiveGPS(module_client, gps_ser), twin_patch_listener(module_client))

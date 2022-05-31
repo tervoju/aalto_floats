@@ -378,6 +378,117 @@
       "windows": {
         "program": "${workspaceFolder}\\modules\\ctdModule\\main.py"
       }
+    },
+    {
+      "name": "localizationModule Remote Debug (Python)",
+      "type": "python",
+      "request": "attach",
+      "port": 5678,
+      "host": "localhost",
+      "logToFile": true,
+      "redirectOutput": true,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/modules/localizationModule",
+          "remoteRoot": "/app"
+        }
+      ],
+      "windows": {
+        "pathMappings": [
+          {
+            "localRoot": "${workspaceFolder}\\modules\\localizationModule",
+            "remoteRoot": "/app"
+          }
+        ]
+      }
+    },
+    {
+      "name": "localizationModule Local Debug (Python)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/modules/localizationModule/main.py",
+      "console": "integratedTerminal",
+      "env": {
+        "EdgeHubConnectionString": "${config:azure-iot-edge.EdgeHubConnectionString}",
+        "EdgeModuleCACertificateFile": "${config:azure-iot-edge.EdgeModuleCACertificateFile}"
+      },
+      "windows": {
+        "program": "${workspaceFolder}\\modules\\localizationModule\\main.py"
+      }
+    },
+    {
+      "name": "audioModule Remote Debug (Python)",
+      "type": "python",
+      "request": "attach",
+      "port": 5678,
+      "host": "localhost",
+      "logToFile": true,
+      "redirectOutput": true,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/modules/audioModule",
+          "remoteRoot": "/app"
+        }
+      ],
+      "windows": {
+        "pathMappings": [
+          {
+            "localRoot": "${workspaceFolder}\\modules\\audioModule",
+            "remoteRoot": "/app"
+          }
+        ]
+      }
+    },
+    {
+      "name": "audioModule Local Debug (Python)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/modules/audioModule/main.py",
+      "console": "integratedTerminal",
+      "env": {
+        "EdgeHubConnectionString": "${config:azure-iot-edge.EdgeHubConnectionString}",
+        "EdgeModuleCACertificateFile": "${config:azure-iot-edge.EdgeModuleCACertificateFile}"
+      },
+      "windows": {
+        "program": "${workspaceFolder}\\modules\\audioModule\\main.py"
+      }
+    },
+    {
+      "name": "diveControlModule Remote Debug (Python)",
+      "type": "python",
+      "request": "attach",
+      "port": 5678,
+      "host": "localhost",
+      "logToFile": true,
+      "redirectOutput": true,
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/modules/diveControlModule",
+          "remoteRoot": "/app"
+        }
+      ],
+      "windows": {
+        "pathMappings": [
+          {
+            "localRoot": "${workspaceFolder}\\modules\\diveControlModule",
+            "remoteRoot": "/app"
+          }
+        ]
+      }
+    },
+    {
+      "name": "diveControlModule Local Debug (Python)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/modules/diveControlModule/main.py",
+      "console": "integratedTerminal",
+      "env": {
+        "EdgeHubConnectionString": "${config:azure-iot-edge.EdgeHubConnectionString}",
+        "EdgeModuleCACertificateFile": "${config:azure-iot-edge.EdgeModuleCACertificateFile}"
+      },
+      "windows": {
+        "program": "${workspaceFolder}\\modules\\diveControlModule\\main.py"
+      }
     }
   ]
 }

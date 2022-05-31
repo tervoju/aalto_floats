@@ -1,7 +1,7 @@
 {
     "ros.distro": "galactic",
     "azure-iot-edge.defaultPlatform": {
-        "platform": "amd64",
+        "platform": "arm64v8",
         "alias": null
     }
 }

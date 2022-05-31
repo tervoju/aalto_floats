@@ -14,6 +14,11 @@
                 "username": "$CONTAINER_REGISTRY_USERNAME_https",
                 "password": "$CONTAINER_REGISTRY_PASSWORD_https",
                 "address": "$CONTAINER_REGISTRY_address_https"
+              },
+              "aaltofloats": {
+                "username": "$CONTAINER_REGISTRY_USERNAME_aaltofloats",
+                "password": "$CONTAINER_REGISTRY_PASSWORD_aaltofloats",
+                "address": "aaltofloats.azurecr.io"
               }
             }
           }
@@ -96,6 +101,46 @@
               "image": "${MODULES.GNSSModule}",
               "createOptions": {}
             }
+          },
+          "ctdModule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.ctdModule}",
+              "createOptions": {}
+            }
+          },
+          "localizationModule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.localizationModule}",
+              "createOptions": {}
+            }
+          },
+          "audioModule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.audioModule}",
+              "createOptions": {}
+            }
+          },
+          "diveControlModule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.diveControlModule}",
+              "createOptions": {}
+            }
           }
         }
       }
@@ -104,7 +149,10 @@
       "properties.desired": {
         "schemaVersion": "1.2",
         "routes": {
-          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream"
+          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream",
+          "localizationModuleToIoTHub": "FROM /messages/modules/localizationModule/outputs/* INTO $upstream",
+          "audioModuleToIoTHub": "FROM /messages/modules/audioModule/outputs/* INTO $upstream",
+          "diveControlModuleToIoTHub": "FROM /messages/modules/diveControlModule/outputs/* INTO $upstream"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
