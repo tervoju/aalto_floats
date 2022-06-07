@@ -75,8 +75,8 @@ async def main():
     global GPS_SENDING_FREQUENCY
     try:
         if not sys.version >= "3.5.3":
-            raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-        print ( "IoT Hub Client for Python" )
+            raise Exception( "The module requires python 3.5.3+. Current version of Python: %s" % sys.version )
+        print ( "GNSS IoT Hub Client  for Python" )
 
         # The client object is used to interact with your Azure IoT hub.
         module_client = IoTHubModuleClient.create_from_edge_environment()
@@ -130,8 +130,14 @@ async def main():
 
                         if gps_data.latitude == 0 or gps_data.longitude == 0:
                             continue
+
                     
                         msg = {
+                           "GeopointTelemetry": {
+                                "lat":  gps_data.latitude,
+                                "lon": gps_data.longitude,
+                                "alt": 0
+                            },
                             "latitude": gps_data.latitude,
                             "longitude": gps_data.longitude,
                             "lat_dir": gps_data.lat_dir,

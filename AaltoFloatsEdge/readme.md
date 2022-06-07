@@ -95,15 +95,28 @@ sudo systemctl restart iotedge
 
 iot edge 1.2
 
+```
+sudo iotedge check
+```
+
 start
 ``` 
 sudo iotedge config apply
 ```
 
-`sudo aziotctl config apply`
+logs
+```
+iotedge logs <container name>
+```
+
+```
+sudo aziotctl config apply
+```
 
 remove
-`sudo apt-get remove aziot-edge`
+```
+sudo apt-get remove aziot-edge
+```
 
 ## IOT HUB
 requires a connection string for deploying new 
