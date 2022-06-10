@@ -74,7 +74,8 @@
                   "Privileged": true,
                   "Binds": [
                     "/dev:/dev",
-                    "/run/udev:/run/udev:ro"
+                    "/run/udev:/run/udev:ro",
+                    "/home/pi/logs:/app/logs"
                   ],
                   "NetworkMode": "host"
                 }

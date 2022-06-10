@@ -2,6 +2,12 @@
 
 Azure IoT Edge project for Floats.
 
+
+## modules:
+
+CTD, GNSS, DVL Altimeter sensor module to collect 
+local log files (not to miss data in the case of )
+
 ## Getting started
 
 1. Clone this repository
@@ -37,7 +43,7 @@ https://github.com/Azure/azure-iot-sdk-python
 
 ## docker logs
 
-docker logs size should be limited e.g.
+docker logs size should be limited e.g. as logs might fill the memory.
 
 in /etc/docker/daemon.json
 ```
@@ -50,12 +56,14 @@ in /etc/docker/daemon.json
 }
 ```
 
-in /etc/netplan/*.yaml
-
 
 
 
 ## Netplan config
+
+
+in /etc/netplan/*.yaml
+
 ```
 # This file is generated from information provided by the datasource.  Changes
 # to it will not persist across an instance reboot.  To disable cloud-init's
