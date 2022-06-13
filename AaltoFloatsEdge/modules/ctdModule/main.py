@@ -152,16 +152,26 @@ async def run_sample(client):
     # e.g. sending messages
     while True:
         send_ctd([0xff,0xff,0xff,0xff,0xaa,0x00,0x90,0x00,0x00,0x00,0x00,0x00,0x00,0x6c])
+        # this should also send the message of the measurement as depth
+        # possibly make log measurements of the message
+        # 
         await asyncio.sleep(1000)
 
+
+# 1) create connection
+# 2) read device twin data
+# 3) direct message handling : logging or not , frequency
+# 4) start record CTD measurements
 
 def main():
     if not sys.version >= "3.5.3":
         raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-    print ( "IoT Hub Client for Python" )
+    print ( "IoT Hub Client for CTD Python" )
 
     # NOTE: Client is implicitly connected due to the handler being set on it
     client = create_client()
+
+    # NOTE: should get the device twin data - e.g. 
 
     # Define a handler to cleanup when module is is terminated by Edge
     def module_termination_handler(signal, frame):

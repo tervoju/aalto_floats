@@ -29,7 +29,6 @@ class dvl2csv_file:
         # Defining CSV columns in a list to maintain
         # the order
         csv_columns = data.keys()
-  
         # Generate the first row of CSV 
         csv_data = ",".join(csv_columns) + "\n"
   

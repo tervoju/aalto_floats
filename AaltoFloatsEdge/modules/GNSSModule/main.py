@@ -133,19 +133,15 @@ async def main():
 
                     
                         msg = {
+                          "timestamp": datetime.now(timezone.utc).isoformat(),
                            "GeopointTelemetry": {
                                 "lat":  gps_data.latitude,
                                 "lon": gps_data.longitude,
                                 "alt": 0
-                            },
-                            "latitude": gps_data.latitude,
-                            "longitude": gps_data.longitude,
-                            "lat_dir": gps_data.lat_dir,
-                            "lon_dir": gps_data.lon_dir,
+                            }
                             "speed": gps_data.spd_over_grnd,
                             "deviceId": os.environ["IOTEDGE_DEVICEID"],
-                            "machineId": FLOAT_SERIAL_NUMBER,
-                            "timestamp": datetime.now(timezone.utc).isoformat()
+                            "machineId": FLOAT_SERIAL_NUMBER
                         }
 
                         payload = Message(json.dumps(msg), content_encoding="utf-8", content_type="application/json")
