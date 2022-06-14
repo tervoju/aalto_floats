@@ -25,8 +25,9 @@ gnss_json = {
 
 def test():
     print("gnss test")
-    to_csv = gnss2csv_file
+    to_csv = gnss2csv_file()
+    to_csv.write_csv_data(gnss_json)
     to_csv.write_csv_data(gnss_json)
 
-if __name__ == "__main":
+if __name__ == "__main__":
     test()

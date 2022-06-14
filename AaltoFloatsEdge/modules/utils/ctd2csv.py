@@ -15,9 +15,10 @@ class ctd2csv_file:
     def __init__(self):
         #CTD
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        csv_header_CTD = ['timestamp','C','T','D','deviceId','machineId']
-        csv_file_ctd = open(timestr + 'ctd_data.csv', 'w')
-        self.csv_writer_ctd = csv.writer(csv_file_time)
+        csv_header_ctd = ['timestamp','datetime','C','T','D','deviceId','machineId']
+        csv_file_ctd = open(timestr + '_ctd_data.csv', 'w')
+        self.csv_writer_ctd = csv.writer(csv_file_ctd)
+        self.csv_writer_ctd.writerow(csv_header_ctd)
 
     def generate_csv_data(self, data: dict) -> str:
         # Defining CSV columns in a list to maintain
@@ -37,19 +38,21 @@ class ctd2csv_file:
         csv_data += ",".join(new_row) + "\n"
         return csv_data
 
-    def write_csv_data(self, dvl_jsondata):
+    def write_csv_data(self, temperature, pressure, conductivity, deviceId, machineId):
         try:
             # ct stores current time
             ct = datetime.now()
             # ts store timestamp of current time
-            ts = ct.timestamp()            
-            csv_s = flatten(dvl_jsondata)
-            csv_data = self.generate_csv_data(csv_s)
-            csv_rows = csv_data.split('\n')
-            if csv_rows[1]:
-                dvl_array = csv_rows[1].split(',')
-                dvl_array.insert(0, ts)  
-                self.csv_writer_time.writerow(dvl_array)
+            ts = ct.timestamp()                  
+            ctd_array = []
+            ctd_array.append(ts)  
+            ctd_array.append(conductivity)  
+            ctd_array.append(temperature)  
+            ctd_array.append(pressure)  
+            ctd_array.append(deviceId)
+            ctd_array.append(machineId)
+            print(ctd_array)
+            self.csv_writer_ctd.writerow(ctd_array)
 
         except:
             logging.info('fails to write csv')
