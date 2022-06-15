@@ -9,6 +9,4 @@ RUN mkdir logs
 
 COPY . .
 
-COPY ../utils ./utils
-
 CMD [ "python3", "-u", "./main.py" ]
