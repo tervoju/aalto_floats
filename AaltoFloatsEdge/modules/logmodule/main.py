@@ -9,6 +9,7 @@ import threading
 from azure.iot.device.aio import IoTHubModuleClient
 
 from gnss2csv import gnss2csv_file
+import json
 
 
 # Event indicating client stop
@@ -27,9 +28,11 @@ def create_client():
             print(message.data)
             print("custom properties are")
             print(message.custom_properties)
-            print("forwarding mesage to output1")
-            if message.custom_properties.type == "location":
-                to_gnss_csv.write_csv_data(message.data) 
+
+            if message.custom_properties['type'] == "location":
+                print("forwarding message to logfile")
+                json_data = json.loads(message.data)
+                to_gnss_csv.write_csv_data(json_data) 
             # not needed here
             # await client.send_message_to_output(message, "output1")
 
