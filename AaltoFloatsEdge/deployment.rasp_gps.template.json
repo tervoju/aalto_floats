@@ -27,16 +27,16 @@
             },
             "env": {
               "ResourceId": {
-                  "value": "$AZURE_IOTHUB_RESOURCE_ID"
+                "value": "$AZURE_IOTHUB_RESOURCE_ID"
               },
               "UploadTarget": {
-                  "value": "$AZURE_UPLOAD_TARGET"
+                "value": "$AZURE_UPLOAD_TARGET"
               },
               "LogAnalyticsWorkspaceId": {
-                  "value": "$AZURE_WORKSPACE_ID"
+                "value": "$AZURE_WORKSPACE_ID"
               },
               "LogAnalyticsSharedKey": {
-                  "value": "$AZURE_PRIMARY_KEY"
+                "value": "$AZURE_PRIMARY_KEY"
               }
             }
           },
@@ -98,39 +98,83 @@
           },
           "IoTEdgeMetricsCollector": {
             "settings": {
-                "image": "mcr.microsoft.com/azureiotedge-metrics-collector:1.0",
-                "createOptions": ""
+              "image": "mcr.microsoft.com/azureiotedge-metrics-collector:1.0",
+              "createOptions": ""
             },
             "type": "docker",
             "env": {
-                "ResourceId": {
-                    "value": "$AZURE_IOTHUB_RESOURCE_ID"
-                },
-                "UploadTarget": {
-                    "value": "$AZURE_UPLOAD_TARGET"
-                },
-                "LogAnalyticsWorkspaceId": {
-                    "value": "$AZURE_WORKSPACE_ID"
-                },
-                "LogAnalyticsSharedKey": {
-                    "value": "$AZURE_PRIMARY_KEY"
-                }
+              "ResourceId": {
+                "value": "$AZURE_IOTHUB_RESOURCE_ID"
+              },
+              "UploadTarget": {
+                "value": "$AZURE_UPLOAD_TARGET"
+              },
+              "LogAnalyticsWorkspaceId": {
+                "value": "$AZURE_WORKSPACE_ID"
+              },
+              "LogAnalyticsSharedKey": {
+                "value": "$AZURE_PRIMARY_KEY"
+              }
             },
             "status": "running",
             "restartPolicy": "always",
             "version": "1.0"
+          },
+          "azureblobstorageoniotedge": {
+            "settings": {
+              "image": "mcr.microsoft.com/azure-blob-storage",
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/home/blob:/blobroot\"],\"PortBindings\":{\"11002/tcp\":[{\"HostPort\":\"11002\"}]}}}"
+            },
+            "type": "docker",
+            "env": {
+              "LOCAL_STORAGE_ACCOUNT_NAME": {
+                "value": "$LOCAL_STORAGE_ACCOUNT_NAME"
+              },
+              "LOCAL_STORAGE_ACCOUNT_KEY": {
+                "value": "$LOCAL_STORAGE_ACCOUNT_KEY"
+              }
+            },
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          },
+          "logmodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.logmodule}",
+              "createOptions": {}
+            }
           }
         }
       }
     },
     "$edgeHub": {
       "properties.desired": {
-        "schemaVersion": "1.2",
+        "schemaVersion": "1.1",
         "routes": {
-          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream"
+          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream",
+          "gnssTologmodule": "FROM /messages/modules/GNSSMOdule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "azureblobstorageoniotedge": {
+      "properties.desired": {
+        "deviceAutoDeleteProperties": {
+          "deleteOn": true,
+          "deleteAfterMinutes": 30,
+          "retainWhileUploading": true
+        },
+        "deviceToCloudUploadProperties": {
+          "uploadOn": true,
+          "uploadOrder": "OldestFirst",
+          "cloudStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=$AZURE_STORAGE_ACCOUNT_NAME;AccountKey=$AZURE_STORAGE_ACCOUNT_KEY;EndpointSuffix=$ENDPOINT_SUFFIX",
+          "deleteAfterUpload": true
         }
       }
     }

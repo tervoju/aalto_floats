@@ -37,11 +37,9 @@ https://docs.microsoft.com/en-us/azure/iot-edge/how-to-collect-and-transport-met
 
 https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-monitor-with-workbooks?view=iotedge-2020-11
 
-
 ## iotedgedev
 new thing - everything running in deocker container, not in host.
 https://github.com/Azure/iot-edge-config
-
 
 
 ## azure iot sdk
@@ -171,7 +169,14 @@ The current Edge Hub routing config looks like this (see the deployment files):
 
 
 
-# blob storage
+# Blob storage
+
+see: 
+https://docs.microsoft.com/en-us/azure/iot-edge/how-to-deploy-blob?view=iotedge-2020-11
+https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python?view=iotedge-2020-11&tabs=environment-variable-linux
+https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-python-file-upload
+https://github.com/Azure-Samples/azure-iotedge-blobstorage-sample/blob/master/modules/blobWriterModule/Program.cs
+
 
 ```	{
   "deviceAutoDeleteProperties": {
