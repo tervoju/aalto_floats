@@ -21,6 +21,7 @@ def create_client():
 
     # Define function for handling received messages
     async def receive_message_handler(message):
+        global to_gnss_csv
         # NOTE: This function only handles messages sent to "input1".
         # Messages sent to other inputs, or to the default, will be discarded
         if message.input_name == "input1":
@@ -30,7 +31,7 @@ def create_client():
             print(message.custom_properties)
 
             if message.custom_properties['type'] == "location":
-                print("forwarding message to logfile")
+                print("storing message sensor values to logfile")
                 json_data = json.loads(message.data)
                 to_gnss_csv.write_csv_data(json_data) 
             # not needed here
@@ -58,6 +59,8 @@ def main():
     if not sys.version >= "3.5.3":
         raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
     print ( "IoT Hub Client for Python - logmodule" )
+
+    
 
     # NOTE: Client is implicitly connected due to the handler being set on it
     client = create_client()

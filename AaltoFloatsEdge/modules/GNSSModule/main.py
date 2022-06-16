@@ -33,7 +33,7 @@ GSTAR_BAUDRATE = 4800
 GPS_DEVICE_VENDOR = GPS_DEVICE_VENDOR_GSTAR
 GPS_DEVICE_ID = GPS_DEVICE_ID_GSTAR
 GPS_BAUDRATE = GSTAR_BAUDRATE
-GPS_SENDING_FREQUENCY = 600
+GPS_SENDING_FREQUENCY = 60 
 GPS_USB_PORT = "/dev/ttyUSB0"
 
 FLOAT_SERIAL_NUMBER = ""
@@ -138,7 +138,7 @@ async def main():
                                 "lat":  gps_data.latitude,
                                 "lon": gps_data.longitude,
                                 "alt": 0
-                            }
+                            },
                             "speed": gps_data.spd_over_grnd,
                             "deviceId": os.environ["IOTEDGE_DEVICEID"],
                             "machineId": FLOAT_SERIAL_NUMBER

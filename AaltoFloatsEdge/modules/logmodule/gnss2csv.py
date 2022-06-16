@@ -15,7 +15,7 @@ class gnss2csv_file:
         #GNSS
         timestr = time.strftime("%Y%m%d-%H%M%S")
         csv_header_gnss = ['timestamp','datetime','lat','lon','alt','speed','fom','deviceId','machineId']
-        csv_file_gnss = open(timestr + '_gnss_data.csv', 'w')
+        csv_file_gnss = open('./logs/' + timestr + '_gnss_data.csv', 'w')
         self.csv_writer_gnss = csv.writer(csv_file_gnss)
         self.csv_writer_gnss.writerow(csv_header_gnss)
 

@@ -145,7 +145,14 @@
             "restartPolicy": "always",
             "settings": {
               "image": "${MODULES.logmodule}",
-              "createOptions": {}
+              "createOptions": {
+                "HostConfig": {
+                  "Privileged": true,
+                  "Binds": [
+                    "/home/pi/logs:/app/logs"
+                  ]
+                }
+              }
             }
           }
         }
