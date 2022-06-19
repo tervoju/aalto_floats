@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <pigpio.h>
 
 #include "iothub_module_client_ll.h"
 #include "iothub_client_options.h"

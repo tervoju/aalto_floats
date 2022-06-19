@@ -8,6 +8,7 @@ RUN apt-get update && \
 
 FROM base AS build-env
 RUN apt-get update && \
+    apt-get install pigpio && \
     apt-get install -y --no-install-recommends cmake gcc g++ make && \
     rm -rf /var/lib/apt/lists/* 
 WORKDIR /app
