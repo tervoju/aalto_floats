@@ -1,0 +1,187 @@
+{
+  "$schema-template": "4.0.0",
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "aaltofloats": {
+                "username": "$CONTAINER_REGISTRY_USERNAME_aaltofloats",
+                "password": "$CONTAINER_REGISTRY_PASSWORD_aaltofloats",
+                "address": "aaltofloats.azurecr.io"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.2",
+              "createOptions": {}
+            },
+            "env": {
+              "ResourceId": {
+                "value": "$AZURE_IOTHUB_RESOURCE_ID"
+              },
+              "UploadTarget": {
+                "value": "$AZURE_UPLOAD_TARGET"
+              },
+              "LogAnalyticsWorkspaceId": {
+                "value": "$AZURE_WORKSPACE_ID"
+              },
+              "LogAnalyticsSharedKey": {
+                "value": "$AZURE_PRIMARY_KEY"
+              }
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.2",
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "5671/tcp": [
+                      {
+                        "HostPort": "5671"
+                      }
+                    ],
+                    "8883/tcp": [
+                      {
+                        "HostPort": "8883"
+                      }
+                    ],
+                    "443/tcp": [
+                      {
+                        "HostPort": "443"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "modules": {
+          "hydromodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.hydromodule}",
+              "createOptions": {
+                "NetworkingConfig": {
+                  "EndpointsConfig": {
+                    "host": {}
+                  }
+                },
+                "HostConfig": {
+                  "Privileged": true,
+                  "Binds": [
+                    "/home/pi/logs:/app/logs"
+                  ],
+                  "NetworkMode": "host"
+                }
+              }
+            }
+          },
+          "IoTEdgeMetricsCollector": {
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-metrics-collector:1.0",
+              "createOptions": ""
+            },
+            "type": "docker",
+            "env": {
+              "ResourceId": {
+                "value": "$AZURE_IOTHUB_RESOURCE_ID"
+              },
+              "UploadTarget": {
+                "value": "$AZURE_UPLOAD_TARGET"
+              },
+              "LogAnalyticsWorkspaceId": {
+                "value": "$AZURE_WORKSPACE_ID"
+              },
+              "LogAnalyticsSharedKey": {
+                "value": "$AZURE_PRIMARY_KEY"
+              }
+            },
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          },
+          "azureblobstorageoniotedge": {
+            "settings": {
+              "image": "mcr.microsoft.com/azure-blob-storage",
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/home/blob:/blobroot\"],\"PortBindings\":{\"11002/tcp\":[{\"HostPort\":\"11002\"}]}}}"
+            },
+            "type": "docker",
+            "env": {
+              "LOCAL_STORAGE_ACCOUNT_NAME": {
+                "value": "$LOCAL_STORAGE_ACCOUNT_NAME"
+              },
+              "LOCAL_STORAGE_ACCOUNT_KEY": {
+                "value": "$LOCAL_STORAGE_ACCOUNT_KEY"
+              }
+            },
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          },
+          "logmodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.logmodule}",
+              "createOptions": {
+                "HostConfig": {
+                  "Privileged": true,
+                  "Binds": [
+                    "/home/pi/logs:/app/logs"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "routes": {
+          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream",
+          "gnssTologmodule": "FROM /messages/modules/GNSSMOdule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "azureblobstorageoniotedge": {
+      "properties.desired": {
+        "deviceAutoDeleteProperties": {
+          "deleteOn": true,
+          "deleteAfterMinutes": 30,
+          "retainWhileUploading": true
+        },
+        "deviceToCloudUploadProperties": {
+          "uploadOn": true,
+          "uploadOrder": "OldestFirst",
+          "cloudStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=$AZURE_STORAGE_ACCOUNT_NAME;AccountKey=$AZURE_STORAGE_ACCOUNT_KEY;EndpointSuffix=$ENDPOINT_SUFFIX",
+          "deleteAfterUpload": true
+        }
+      }
+    }
+  }
+}
