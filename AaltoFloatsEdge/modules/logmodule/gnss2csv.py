@@ -14,14 +14,12 @@ from typing import BinaryIO
 from venv import create
 from azure.storage.blob import BlobServiceClient
 
-AZURE_STORAGE_ACCOUNT_NAME="siloiotvqc"
-AZURE_STORAGE_ACCOUNT_KEY="yFpDA3LiAZocCMc13VoZnH4/Z1dNtfzUfWYXsqOCwclmcLZuZCBlXQH53siG+ERzYGYq+vYwFLGj+AStjWxdUw=="
-ENDPOINT_SUFFIX="core.windows.net"
+AZURE_STORAGE_ACCOUNT_NAME=os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") 
+AZURE_STORAGE_ACCOUNT_KEY=os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
+ENDPOINT_SUFFIX=os.environ.get("ENDPOINT_SUFFIX")
 
 LOCAL_LOG_PATH = "/app/logs"
-AZURE_STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=siloiotvqc;AccountKey=yFpDA3LiAZocCMc13VoZnH4/Z1dNtfzUfWYXsqOCwclmcLZuZCBlXQH53siG+ERzYGYq+vYwFLGj+AStjWxdUw==;EndpointSuffix=core.windows.net"
-
-
+AZURE_STORAGE_CONNECTION_STRING=AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=' + str(AZURE_STORAGE_ACCOUNT_NAME) + ';AccountKey=' + str(AZURE_STORAGE_ACCOUNT_KEY) +';EndpointSuffix='+ str(ENDPOINT_SUFFIX)
 blob = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
 
 def store_log_to_blob(self, blob_name: str, file_name: str):

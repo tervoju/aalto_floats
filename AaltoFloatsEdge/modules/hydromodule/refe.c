@@ -102,10 +102,18 @@ int main(int argc, char *argv[])
     int samples;
     int pause;
 
-    if (argc > 1) samples = atoi(argv[1]); else samples = 2000000;
-    if (argc > 2) pause = atoi(argv[2]); else pause = 0;
+    if (argc > 1) 
+        samples = atoi(argv[1]); 
+    else 
+        samples = 2000000;
+    
+    if (argc > 2) 
+        pause = atoi(argv[2]); 
+    else 
+        pause = 0;
 
-    if (gpioInitialise() < 0) return 1;
+    if (gpioInitialise() < 0) 
+        return 1;
 
     // Need to set GPIO as outputs otherwise wave will have no effect.
 
@@ -274,11 +282,13 @@ int main(int argc, char *argv[])
     
     FILE *fp = NULL;
     fp = fopen(filename, "w+");
+
     if (!fp)
       perror("fopen");
     
     // Print array to file
-    for(i=0; i<samples; i++) {
+    for(i=0; i<samples; i++) 
+    {
         fprintf(fp, "%d, %d, %d, %d, %d \n", 
             data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]);
     }
@@ -287,7 +297,8 @@ int main(int argc, char *argv[])
 
     printf("Sampling done, filename: %s ", filename);
 
-    if (pause) time_sleep(pause);
+    if (pause) 
+        time_sleep(pause);
 
     gpioTerminate();
     free(data);
