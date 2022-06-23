@@ -158,9 +158,9 @@ async def main():
         def stdin_listener():
             while True:
                 try:
-                    selection = input("Press Q to quit\n")
+                    selection = input(".")
                     if selection == "Q" or selection == "q":
-                        print("Quitting...")
+                        print("Quitting...\n")
                         break
                 except:
                     time.sleep(10)
