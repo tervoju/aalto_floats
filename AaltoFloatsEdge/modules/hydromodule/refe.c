@@ -1,13 +1,10 @@
 /*
-
-rawMCP3202.c
+rawMCP3202
 Public Domain
 2016-03-20
 
 gcc -Wall -pthread -o rawMCP3202 rawMCP3202_updated.c -lpigpio -g
-
 This code shows how to bit bang SPI using DMA.
-
 Using DMA to bit bang allows for two advantages
 
 1) the time of the SPI transaction can be guaranteed to within a
@@ -17,19 +14,18 @@ Using DMA to bit bang allows for two advantages
   simultaneously.
 
 This code shows how to read more than one MCP3202 at a time.
-
 Each MCP3202 shares the SPI clock, MOSI, and slave select lines but has
 a unique MISO line.
+
+https://forums.raspberrypi.com/viewtopic.php?t=71089
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include <pigpio.h>
 
 #define SPI_SS 24 // GPIO for slave select.
-
 #define ADCS 4    // Number of connected MCP3202.
 
 #define BITS 12            // Bits per reading.
@@ -42,7 +38,6 @@ a unique MISO line.
 #define MISO4 11   //     4
 
 #define BUFFER 250       // Generally make this buffer as large as possible.
-
 #define REPEAT_MICROS 40 // Reading every x microseconds.
 
 //#define SAMPLES 2000000  // Number of samples to take,
