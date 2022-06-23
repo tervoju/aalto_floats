@@ -16,6 +16,7 @@
 #include "iothubtransportmqtt.h"
 #include "iothub.h"
 #include "time.h"
+#include "rawMCP3202.h"
 
 typedef struct MESSAGE_INSTANCE_TAG
 {
@@ -173,6 +174,7 @@ void iothub_module()
         while (true)
         {
             IoTHubModuleClient_LL_DoWork(iotHubModuleClientHandle);
+            getADCSamples(2000000, 0);
             ThreadAPI_Sleep(100);
         }
     }

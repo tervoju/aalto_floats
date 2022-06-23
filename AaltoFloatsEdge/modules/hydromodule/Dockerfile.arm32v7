@@ -11,19 +11,23 @@ RUN apt-get update && \
     apt-get install -y apt-utils && \
     apt-get install -y unzip && \
     apt-get install -y azure-iot-sdk-c-dev && \
+
     rm -rf /var/lib/apt/lists/*
 
 FROM base AS build-env
 RUN apt-get update && \
+    apt-get install -y build-essential && \
     apt-get install -y --no-install-recommends cmake gcc g++ make && \
+    apt install -y python3.7 && \
+    apt install -y python3.7-distutils && \
+    apt install -y python3-pip && \ 
     rm -rf /var/lib/apt/lists/* 
 
 RUN wget https://github.com/joan2937/pigpio/archive/master.zip
 RUN unzip master.zip
-RUN cd pigpio-master
+WORKDIR "/pigpio-master"
 RUN make
 RUN make install
-RUN cd ..
 
 WORKDIR /app
 COPY . ./
