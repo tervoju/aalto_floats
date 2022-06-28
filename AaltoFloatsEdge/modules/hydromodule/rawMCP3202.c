@@ -87,8 +87,9 @@ void getReading(
 }
 
 
-int main(int argc, char *argv[])
+int getADCSamples(int argSamples, int argPause)
 {
+    int samples = 2000000, pause = 0;
     int i, wid, offset;
     char buf[2];
     gpioPulse_t final[2];
@@ -99,18 +100,16 @@ int main(int argc, char *argv[])
     float cbs_per_reading;
     rawWaveInfo_t rwi;
     double start, end;
-    int samples;
-    int pause;
 
-    if (argc > 1) 
-        samples = atoi(argv[1]); 
-    else 
+    if ((argSamples > 2000000) ||  (argSamples < 200000))
         samples = 2000000;
+    else
+        samples = argSamples;
     
-    if (argc > 2) 
-        pause = atoi(argv[2]); 
+    if ((argPause < 0) || (argPause > 10))
+        pause = 0; 
     else 
-        pause = 0;
+        pause = argPause;
 
     if (gpioInitialise() < 0) 
         return 1;
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
         In practice make the buffer as big as you can.
     */
 
-    for (i=0; i<BUFFER; i++)
+    for (i=0; i < BUFFER; i++)
     {
        buf[0] = 0xC0; // Start bit, single ended, channel 0.
 

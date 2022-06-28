@@ -290,3 +290,11 @@ We are interested in the bytes 5 and 6 (the SPN number 250 is the J1939 paramete
 6. You have now the actual real value
     - 19464.5 l
 
+
+#AZ
+  if installed with 
+  
+  pip3 install azure-cli
+
+  include PATH e.g. 
+  export PATH="/home/pi/.local/bin:$PATH"
