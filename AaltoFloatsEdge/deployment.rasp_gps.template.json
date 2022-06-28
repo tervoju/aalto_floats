@@ -114,6 +114,9 @@
               },
               "LogAnalyticsSharedKey": {
                 "value": "$AZURE_PRIMARY_KEY"
+              },
+              "MetricsEndpointsCSV": {
+                "value": "http://edgeAgent:9600/metrics,http://edgeHub:9600/metrics,http://hydropymodule:9600/metrics"
               }
             },
             "status": "running",
@@ -154,6 +157,16 @@
                 }
               }
             }
+          },
+          "hydropymodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.hydropymodule}",
+              "createOptions": {}
+            }
           }
         }
       }
@@ -163,7 +176,8 @@
         "schemaVersion": "1.1",
         "routes": {
           "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream",
-          "gnssTologmodule": "FROM /messages/modules/GNSSMOdule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")"
+          "gnssTologmodule": "FROM /messages/modules/GNSSMOdule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")",
+          "hydropymoduleToIoTHub": "FROM /messages/modules/hydropymodule/outputs/* INTO $upstream"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
