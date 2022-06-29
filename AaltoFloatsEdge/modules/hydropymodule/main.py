@@ -26,6 +26,12 @@ moduleId = os.environ["IOTEDGE_MODULEID"]
 # Event indicating client stop
 stop_event = threading.Event()
 
+def get_cpu_temp():
+    tempFile = open( "/sys/class/thermal/thermal_zone0/temp" )
+    cpu_temp = tempFile.read()
+    tempFile.close()
+    return float(float(cpu_temp)/1000.0)
+
 def create_client():
     client = IoTHubModuleClient.create_from_edge_environment()
 
@@ -61,7 +67,7 @@ async def run_module(client):
 
     # e.g. sending messages
     while True:
-        tempGauge.labels(deviceId,instanceNumber,iothubHostname,moduleId).set(random.randrange(80, 90))
+        tempGauge.labels(deviceId,instanceNumber,iothubHostname,moduleId).set(get_cpu_temp())
         await asyncio.sleep(10)
 
 def main():

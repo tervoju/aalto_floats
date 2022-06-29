@@ -38,3 +38,21 @@ e.g.
 ```
 sudo docker exec IoTEdgeMetricsCollector curl http://hydropymodule:9600/metrics
 ```
+
+## azure logs
+
+check that logs are received in Azure in IoT Hub / Monitoring / Logs part by adding query
+
+```
+InsightsMetrics
+| where Name == 'replace-with-custom-metric-name'
+```
+
+
+## workbook
+
+### Customize workbooks
+Azure Monitor workbooks are customizable. You can edit the public templates to suit your requirements. All the visualizations are driven by resource-centric `Kusto Query Language` queries on the InsightsMetrics table.
+
+To begin customizing a workbook, first enter editing mode. Select the Edit button in the menu bar of the workbook. Curated workbooks make extensive use of workbook groups. You may need to select Edit on several nested groups before being able to view a visualization query.
+
