@@ -11,9 +11,9 @@
             "loggingOptions": "",
             "registryCredentials": {
               "aaltofloats": {
-                "username": "$CONTAINER_REGISTRY_USERNAME_aaltofloats",
-                "password": "$CONTAINER_REGISTRY_PASSWORD_aaltofloats",
-                "address": "aaltofloats.azurecr.io"
+                "username": "$AALTO_CONTAINER_REGISTRY_USERNAME",
+                "password": "$AALTO_CONTAINER_REGISTRY_PASSWORD",
+                "address": "$AALTO_CONTAINER_REGISTRY_ADDRESS"
               }
             }
           }
@@ -71,13 +71,13 @@
           }
         },
         "modules": {
-          "GNSSModule": {
+          "gnssmodule": {
             "version": "1.0",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.GNSSModule}",
+              "image": "${MODULES.gnssmodule}",
               "createOptions": {
                 "NetworkingConfig": {
                   "EndpointsConfig": {
@@ -173,11 +173,10 @@
     },
     "$edgeHub": {
       "properties.desired": {
-        "schemaVersion": "1.1",
+        "schemaVersion": "1.2",
         "routes": {
-          "GNSSModuleToIoTHub": "FROM /messages/modules/GNSSModule/outputs/* INTO $upstream",
-          "gnssTologmodule": "FROM /messages/modules/GNSSMOdule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")",
-          "hydropymoduleToIoTHub": "FROM /messages/modules/hydropymodule/outputs/* INTO $upstream"
+          "GNSSModuleToIoTHub": "FROM /messages/modules/gnssmodule/outputs/* INTO $upstream",
+          "gnssTologmodule": "FROM /messages/modules/gnssmodule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200

@@ -10,11 +10,6 @@
             "minDockerVersion": "v1.25",
             "loggingOptions": "",
             "registryCredentials": {
-              "https": {
-                "username": "$CONTAINER_REGISTRY_USERNAME_https",
-                "password": "$CONTAINER_REGISTRY_PASSWORD_https",
-                "address": "$CONTAINER_REGISTRY_address_https"
-              },
               "aaltofloats": {
                 "username": "$CONTAINER_REGISTRY_USERNAME_aaltofloats",
                 "password": "$CONTAINER_REGISTRY_PASSWORD_aaltofloats",

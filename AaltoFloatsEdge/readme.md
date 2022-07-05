@@ -33,9 +33,7 @@ sudo iotedge check
 
 ## log analytics
 
-https://docs.microsoft.com/en-us/azure/iot-edge/how-to-collect-and-transport-metrics?view=iotedge-2020-11&tabs=iothub
-
-https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-monitor-with-workbooks?view=iotedge-2020-11
+see Azuremonitoring readme.md
 
 ## iotedgedev
 new thing - everything running in deocker container, not in host.
