@@ -9,6 +9,7 @@ import sys
 import signal
 import os
 import threading
+
 from azure.iot.device.aio import IoTHubModuleClient
 from azure.iot.device import MethodResponse
 from azure.iot.device import Message

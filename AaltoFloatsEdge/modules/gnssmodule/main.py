@@ -85,20 +85,26 @@ async def main():
         await module_client.connect()
 
         twin = await module_client.get_twin()
-        if "serialNumber" in twin:
-            FLOAT_SERIAL_NUMBER = twin["serialNumber"]
-            logging.info(FLOAT_SERIAL_NUMBER)
+        # "telemetryConfig": { "sendFrequency": "10" },
+        # in minutes
+        if "telemetryConfig" in twin["desired"]:
+            telemetry = twin["desired"]["telemetryConfig"]
+            GPS_SENDING_FREQUENCY = int(telemetry["sendFrequency"])*60
+            logging.info(GPS_SENDING_FREQUENCY)
+        else:
+            logging.info(twin)
+            logging.info("no telemetryConfig data")
 
         # currently only serialNumber value handled
         async def twin_patch_listener(module_client):
             global TWIN_CALLBACKS
-            global MACHINE_SERIAL_NUMBER
+            global GPS_SENDING_FREQUENCY
             while True:
                 try:
                     data = await module_client.receive_twin_desired_properties_patch()  # blocking call
                     logging.info( "The data in the desired properties patch was: %s" % data)
-                    if data["desired"]["serialNumber"]:
-                        FLOAT_SERIAL_NUMBER = data["desired"]["serialNumber"]
+                    if data["desired"]["telemetryConfig"]:
+                         GPS_SENDING_FREQUENCY = int(data["desired"]["telemetryConfig"]["sendFrequency"])*60
                     TWIN_CALLBACKS += 1
                     print ( "Total calls confirmed: %d\n" % TWIN_CALLBACKS )
                 except Exception as ex:
