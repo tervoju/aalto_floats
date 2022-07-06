@@ -12,6 +12,7 @@ from datetime import timezone
 
 from six.moves import input
 from azure.iot.device.aio import IoTHubModuleClient
+from azure.iot.device import MethodResponse
 from azure.iot.device import Message
 
 import threading
@@ -25,9 +26,13 @@ TCP_IP = "192.168.194.95"
 TCP_PORT = 16171
 deviceid = "SUB"
 
+#logging on
+DVL_LOGGING_ON = 1
+DVL_SENDING_FREQUENCY = 1
+TWIN_CALLBACKS = 0
+
 #
 #   
-#
 async def main():
     global TCP_IP, TCP_PORT, csv_file_time, csv_writer_time, csv_file_ts, csv_writer_ts
 
@@ -42,6 +47,17 @@ async def main():
         # connect the client.
         await module_client.connect()
 
+        twin = await module_client.get_twin()
+        # "telemetryConfig": { "sendFrequency": "10" },
+        # in minutes
+        if "telemetryConfig" in twin["desired"]:
+            telemetry = twin["desired"]["telemetryConfig"]
+            DVL_SENDING_FREQUENCY = int(telemetry["sendFrequency"])
+            logging.info(DVL_SENDING_FREQUENCY)
+        else:
+            logging.info(twin)
+            logging.info("no telemetryConfig data")
+
         
         # define behavior for receiving an input message on input1
         async def input1_listener(module_client):
@@ -53,6 +69,21 @@ async def main():
                 print(input_message.custom_properties)
                 print("forwarding mesage to output1")
                 await module_client.send_message_to_output(input_message, "output1")
+
+        # currently only sendFrequency value handled
+        async def twin_patch_listener(module_client):
+            global TWIN_CALLBACKS
+            global DVL_SENDING_FREQUENCY
+            while True:
+                try:
+                    data = await module_client.receive_twin_desired_properties_patch()  # blocking call
+                    logging.info( "The data in the desired properties patch was: %s" % data)
+                    if data["desired"]["telemetryConfig"]:
+                         DVL_SENDING_FREQUENCY = int(data["desired"]["telemetryConfig"]["sendFrequency"])
+                    TWIN_CALLBACKS += 1
+                    logging.info ("{}:{}".format("Total calls confirmed: ", TWIN_CALLBACKS ))
+                except Exception as ex:
+                   logging.info("{}:{}".format("Unexpected error in twin_patch_listener: ", ex ))
         
         # define behavior for halting the application
         def stdin_listener():
@@ -65,7 +96,7 @@ async def main():
                 except:
                     time.sleep(10)
         
-        listen = TCPConnection()
+        listen = TCPConnection(module_client)
         await listen.connect(TCP_IP, TCP_PORT)
         logging.info( "The dvl module TCP socket is connected ")
             

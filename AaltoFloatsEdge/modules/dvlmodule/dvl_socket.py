@@ -10,6 +10,10 @@ from flatten_json import flatten
 from datetime import datetime
 from datetime import timezone
 
+from azure.iot.device.aio import IoTHubModuleClient
+from azure.iot.device import MethodResponse
+from azure.iot.device import Message
+
 from six.moves import input
 import threading
 import asyncio
@@ -35,9 +39,10 @@ def async_wrap(func):
     return run
 
 class TCPConnection:
-    def __init__(self, sock=None):
+    def __init__(self, client=None, sock=None):
         logging.basicConfig()
         logging.getLogger().setLevel(os.environ.get("LOGLEVEL", "INFO"))
+        self.module_client = client
         if sock is None:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         else:
@@ -55,8 +60,8 @@ class TCPConnection:
         data = self.sock.recv(1024)
         print(data)
 
-    @async_wrap
-    def read_dvl(self):
+    #@async_wrap
+    async def read_dvl(self):
         global dataJson, deviceid, save_locally
         vx = 0
         vy = 0
@@ -130,8 +135,8 @@ class TCPConnection:
                         vy = 0
                         vz = 0
                         logging.info("message collected")
-                        ##payload = Message(json.dumps(message), content_encoding="utf-8", content_type="application/json")
-                        ##await module_client.send_message_to_output(payload, "DVLaverageoutput") 
+                        payload = Message(json.dumps(message), content_encoding="utf-8", content_type="application/json")
+                        await self.module_client.send_message_to_output(payload, "output1") 
             # IMU message with x,y,z
             if "ts" in jsondata:
                 logging.info("ts as IMU message")

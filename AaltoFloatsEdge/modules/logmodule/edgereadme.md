@@ -6,6 +6,13 @@ example for azure edge digital twin data and direct methods
 
 # direct method
 
+
+see:
+
+https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-direct-methods
+
+
+
 # digital twins
 
 Device/module twins are JSON documents that store device state information, including metadata, configurations, and conditions. IoT Hub persists a device twin for each device that connects to it.
@@ -58,5 +65,6 @@ https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-python-module?view=iote
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-python-twin-getstarted
 
 https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-device-twins
+
 
 

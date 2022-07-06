@@ -23,6 +23,7 @@ import pyudev
 # for example GPS vendor and device ublox GPS receiver
 GPS_DEVICE_VENDOR_UBLOX = '1546'
 GPS_DEVICE_ID_UBLOX = '01a8'
+UBLOX_BAUDRATE = 9600
 
 # gstar
 GPS_DEVICE_VENDOR_GSTAR = '067b'
@@ -34,6 +35,7 @@ GPS_DEVICE_VENDOR = GPS_DEVICE_VENDOR_GSTAR
 GPS_DEVICE_ID = GPS_DEVICE_ID_GSTAR
 GPS_BAUDRATE = GSTAR_BAUDRATE
 GPS_SENDING_FREQUENCY = 60 
+
 GPS_USB_PORT = "/dev/ttyUSB0"
 
 FLOAT_SERIAL_NUMBER = ""
@@ -133,11 +135,8 @@ async def main():
 
                     if len(data) > 6 and data[0:6] in gps_message_types:
                         gps_data = pynmea2.parse(data)
-
                         if gps_data.latitude == 0 or gps_data.longitude == 0:
                             continue
-
-                    
                         msg = {
                           "timestamp": datetime.now(timezone.utc).isoformat(),
                            "GeopointTelemetry": {
@@ -176,8 +175,9 @@ async def main():
         GPS_PORTS = list_devices(GPS_DEVICE_VENDOR, GPS_DEVICE_ID)
         print(GPS_PORTS)
         if GPS_PORTS != []:
-            print('GPS DEVICE FOUND')
+            print('GPS DEVICE(s) FOUND')
             gps_port = GPS_PORTS[0] # select first device
+            print(gps_port)
         else:
             print('NO RIGHT GPS DEVICE FOUND')
 
