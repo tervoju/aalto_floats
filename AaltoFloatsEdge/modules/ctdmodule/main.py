@@ -86,6 +86,11 @@ def list_devices(vid=None, pid=None):
 
 ## intepredign string from CTD
 def read_ctd_values(ctd_response):
+  
+    # check if there is no response from CTD
+    if len(ctd_response) == 0:
+        return -1,0,0,0
+    # check the response for relevance
     print ("response:", ctd_response)
     result = ctd_response.find('$AQCTD')
     conductivity = 0.0
