@@ -17,7 +17,7 @@ import json
 
 # Event indicating client stop
 stop_event = threading.Event()
-to_gnss_csv = gnss2csv_file()
+to_gnss_csv = gnss2csv_file('/app/logs/')
 
 gnss_row_limit = 30 # limit the size of the  gnss csv log, could be as module twin data 
 gnss_row_cnt = 0
@@ -48,7 +48,7 @@ def create_client():
                 else:
                     gnss_row_cnt = 0
                     to_gnss_csv.close_csv_log()
-                    to_gnss_csv = gnss2csv_file() # new file
+                    to_gnss_csv = gnss2csv_file('/app/logs') # new file
             # not needed here
             # await client.send_message_to_output(message, "output1")
     
@@ -57,10 +57,18 @@ def create_client():
     async def method_handler(method_request):
         global SENDING
         logging.info ("Direct Method handler - message")
-        if method_request.name == "get_data":
+        if method_request.name == "remove_all_logs":
             logging.info("Received request for get_data")
             method_response = MethodResponse.create_from_method_request(
                 method_request, 200, "some data"
+            )
+            await client.send_method_response(method_response)
+
+        if method_request.name == "remove_gnss_logs":
+            logging.info("Received request for get_data")
+            to_gnss_csv.files.delete_files("gnss")
+            method_response = MethodResponse.create_from_method_request(
+                method_request, 200, "removed old local gnss log files"
             )
             await client.send_method_response(method_response)
 
@@ -92,10 +100,11 @@ def create_client():
         global NRO_GNSS_OF_MEASUREMENTS
         while True:
             try:
+                module_client.r
                 data = await module_client.receive_twin_desired_properties_patch()  # blocking call
                 logging.info( "The data in the desired properties patch was: %s" % data)
                 if data["desired"]["telemetryConfig"]:
-                    NRO_GNSS_OF_MEASUREMENTS = int(data["desired"]["telemetryConfig"]["nroOfMeasurements"])*60
+                    NRO_GNSS_OF_MEASUREMENTS = int(data["desired"]["telemetryConfig"]["nroOfMeasurements"])
                 TWIN_CALLBACKS += 1
                 logging.info('{}:{}'.format("Total calls confirmed", TWIN_CALLBACKS ))
             except Exception as ex:

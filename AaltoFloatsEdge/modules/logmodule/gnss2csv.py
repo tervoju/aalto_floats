@@ -37,12 +37,15 @@ def store_log_to_blob(self, blob_name: str, file_name: str):
 
 
 class gnss2csv_file:
-    def __init__(self):
+    def __init__(self, log_path):
         #GNSS
         timestr = time.strftime("%Y%m%d-%H%M%S")
         csv_header_gnss = ['timestamp','datetime','lat','lon','alt','speed','fom','deviceId','machineId']
+        self.log_path = log_path
         self.file_name = timestr + '_gnss_data.csv'
-        self.csv_file_gnss = open('./logs/' + timestr + '_gnss_data.csv', 'w')
+        self.csv_file_gnss = open(log_path + timestr + '_gnss_data.csv', 'w')
+        print(self.file_name)
+        print(self.csv_file_gnss.name)
         self.csv_writer_gnss = csv.writer(self.csv_file_gnss)
         self.csv_writer_gnss.writerow(csv_header_gnss)
         self.csv_file_gnss.flush() 
@@ -51,10 +54,8 @@ class gnss2csv_file:
         # Defining CSV columns in a list to maintain
         # the order
         csv_columns = data.keys()
-  
         # Generate the first row of CSV 
         csv_data = ",".join(csv_columns) + "\n"
-  
         # Generate the single record present
         new_row = list()
         for col in csv_columns:
@@ -64,6 +65,16 @@ class gnss2csv_file:
         # in CSV format
         csv_data += ",".join(new_row) + "\n"
         return csv_data
+
+    def remove_old_logs(self, type):
+        log_files = self.log_path 
+        filenames = [entry.name for entry in sorted(os.scandir(log_files),
+            key=lambda x: x.stat().st_mtime, reverse=True)]
+        # saves last two files
+        for filename in filenames[2:]:
+            filename_relPath = os.path.join(self.log_path, filename)
+            if filename_relPath.__contains__(type):
+                os.remove(filename_relPath)
     
     def close_csv_log(self):
         global blob

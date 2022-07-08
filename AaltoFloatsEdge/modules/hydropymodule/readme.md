@@ -1,11 +1,58 @@
 
-# trial for customer prometheus metrics
+# Azure monitor integration
+
+https://docs.microsoft.com/en-us/azure/iot-edge/how-to-collect-and-transport-metrics?view=iotedge-2020-11&tabs=iothub
+
+
+# trial for custom prometheus metrics
 
 A short summary how to gather custom metrics from your IoT Edge modules in addition to the built-in metrics that the system modules provide. 
 These are extension to the built-in metrics. However, system may require additional information from custom modules to create full status of the solution. 
 Custom modules can be integrated into monitoring solution by using the appropriate Prometheus client library to emit metrics. 
 This additional information can enable new views or alerts specialized system requirements.
 
+# example deployment.json
+https://github.com/Azure/iotedge/blob/release/1.1/edge-modules/metrics-collector/src/ExampleDeployment.json
+
+
+## Azure monitoring settings
+AZURE_IOTHUB_RESOURCE_ID=/subscriptions/XXXb1ae8-2b59-4496-8630-29a121b81700/resourceGroups/silo_XXX/providers/Microsoft.Devices/IotHubs/iothubXXXX
+AZURE_UPLOAD_TARGET=AzureMonitor
+AZURE_WORKSPACE_ID=XXXe92af-fca6-4e30-90b6-e9aef950b1bd
+AZURE_PRIMARY_KEY=XXXSIqF/HSFTA0lT891x/hpz3rUvSFjOrwAw52YD5dyhI53gAR7eR3ynYunKmhccn0eFflqWgWKasKKyAU+9Og==
+
+## EXAMPLE
+
+```
+
+   "IoTEdgeMetricsCollector": {
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-metrics-collector:1.0",
+              "createOptions": ""
+            },
+            "type": "docker",
+            "env": {
+              "ResourceId": {
+                "value": "$AZURE_IOTHUB_RESOURCE_ID"
+              },
+              "UploadTarget": {
+                "value": "$AZURE_UPLOAD_TARGET"
+              },
+              "LogAnalyticsWorkspaceId": {
+                "value": "$AZURE_WORKSPACE_ID"
+              },
+              "LogAnalyticsSharedKey": {
+                "value": "$AZURE_PRIMARY_KEY"
+              },
+              "MetricsEndpointsCSV": {
+                "value": "http://edgeAgent:9600/metrics,http://edgeHub:9600/metrics,http://hydropymodule:9600/metrics"
+              }
+            },
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          },
+```
 
 [Short intro to custom metrics](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-add-custom-metrics?view=iotedge-2020-11)
 
@@ -13,6 +60,7 @@ This additional information can enable new views or alerts specialized system re
 requires additional prometheus client library
 
 https://prometheus.io/docs/instrumenting/clientlibs/
+
 
 and specially for python code:
 
