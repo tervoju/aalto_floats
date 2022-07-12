@@ -61,6 +61,7 @@ def create_client():
                 method_request, 200, "remove data")
             await client.send_method_response(method_response)
 
+        # tested - works
         elif method_request.name == "remove_gnss_logs":
             logging.info("Received request for remove gnss logs")
             to_gnss_csv.remove_old_logs("gnss")
