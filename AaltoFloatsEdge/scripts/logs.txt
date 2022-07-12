@@ -1,0 +1,5 @@
+20220712-121049_gnss_data.csv
+/app/logs/20220712-121049_gnss_data.csv
+IoT Hub Client for Python - logmodule
+20220712-121054_gnss_data.csv
+/app/logs20220712-121054_gnss_data.csv

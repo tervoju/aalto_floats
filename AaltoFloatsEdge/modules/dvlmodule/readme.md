@@ -1,16 +1,22 @@
-# dvl message information
+# dvl Waterlinkd A50
 
-# ethernet connection
+message information
+
+## ethernet connection
 
 requires fixed ethernet address, can be set IPv4 to
 `192.168.194.90`
 
 `http://192.168.194.95`
 
+
+```
 sudo ip ad add 192.168.194.90/24 dev eth0
+```
+
 can be done in netplan as well
 
-# axis
+## axis
 
 The axis on the DVL-A50 are oriented as follows:
 

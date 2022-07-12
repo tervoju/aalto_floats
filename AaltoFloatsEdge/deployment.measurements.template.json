@@ -144,6 +144,17 @@
           "logmodule": {
             "version": "1.0",
             "type": "docker",
+            "env": {
+              "AZURE_STORAGE_ACCOUNT_NAME": {
+                "value": "$AZURE_STORAGE_ACCOUNT_NAME"
+              },
+              "AZURE_STORAGE_ACCOUNT_KEY": {
+                "value": "$AZURE_STORAGE_ACCOUNT_KEY"
+              },
+              "ENDPOINT_SUFFIX": {
+                "value": "$ENDPOINT_SUFFIX"
+              }
+            },
             "status": "running",
             "restartPolicy": "always",
             "settings": {

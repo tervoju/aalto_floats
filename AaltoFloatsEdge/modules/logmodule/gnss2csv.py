@@ -14,28 +14,29 @@ from typing import BinaryIO
 from venv import create
 from azure.storage.blob import BlobServiceClient
 
-AZURE_STORAGE_ACCOUNT_NAME=os.environ.get("AZURE_STORAGE_ACCOUNT_NAME") 
-AZURE_STORAGE_ACCOUNT_KEY=os.environ.get("AZURE_STORAGE_ACCOUNT_KEY")
-ENDPOINT_SUFFIX=os.environ.get("ENDPOINT_SUFFIX")
+AZURE_STORAGE_ACCOUNT_NAME=os.environ["AZURE_STORAGE_ACCOUNT_NAME"] 
+AZURE_STORAGE_ACCOUNT_KEY=os.environ["AZURE_STORAGE_ACCOUNT_KEY"]
+ENDPOINT_SUFFIX=os.environ["ENDPOINT_SUFFIX"]
 
 LOCAL_LOG_PATH = "/app/logs"
-AZURE_STORAGE_CONNECTION_STRING=AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=' + str(AZURE_STORAGE_ACCOUNT_NAME) + ';AccountKey=' + str(AZURE_STORAGE_ACCOUNT_KEY) +';EndpointSuffix='+ str(ENDPOINT_SUFFIX)
-blob = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=' + str(AZURE_STORAGE_ACCOUNT_NAME) + ';AccountKey=' + str(AZURE_STORAGE_ACCOUNT_KEY) +';EndpointSuffix='+ str(ENDPOINT_SUFFIX)
+blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
 
-def store_log_to_blob(self, blob_name: str, file_name: str):
-    global blob
+# blob storage upload
+def store_log_to_blob(blob_name, file_name):
+    logging.info('{}:{}'.format(blob_name, file_name))
     try:
         blob_client = blob_service_client.get_blob_client(blob_name, file_name)
         # Get full path to the file
         upload_file_path = os.path.join(LOCAL_LOG_PATH, file_name)
         with open(upload_file_path, "rb") as data:
             blob_client.upload_blob(data,overwrite=True)
-        print("success")
+        logging.info("loading file to blob success")
 
     except Exception as e:
         print(e.message)
 
-
+# local log file
 class gnss2csv_file:
     def __init__(self, log_path):
         #GNSS
@@ -68,19 +69,26 @@ class gnss2csv_file:
 
     def remove_old_logs(self, type):
         log_files = self.log_path 
-        filenames = [entry.name for entry in sorted(os.scandir(log_files),
-            key=lambda x: x.stat().st_mtime, reverse=True)]
-        # saves last two files
-        for filename in filenames[2:]:
-            filename_relPath = os.path.join(self.log_path, filename)
-            if filename_relPath.__contains__(type):
-                os.remove(filename_relPath)
+        logging.info("{}:{}".format("removing old logs", type))
+        logging.info("{}:{}".format("log_files", log_files))
+        try:
+            filenames = [entry.name for entry in sorted(os.scandir(log_files),
+                key=lambda x: x.stat().st_mtime, reverse=True)]
+            # saves last two files
+            for filename in filenames[2:]:
+                filename_relPath = os.path.join(self.log_path, filename)
+                if filename_relPath.__contains__(type):
+                    os.remove(filename_relPath)
+        except Exception as ex:
+            logging.info("{}:{}".format("Unexpected error in twin_patch_listener", ex ))
+
     
     def close_csv_log(self):
-        global blob
+        file_name = self.file_name
         self.csv_file_gnss.close() # when you're done.
-        #write file to blob?
-        blob.store_log_to_blob("gnsslogs", self.file_name)
+        #write file to blob - trial
+        logging.info('{}:{}'.format("file to blob", file_name))
+        store_log_to_blob("gnsslogs", file_name)
 
 
     def write_csv_data(self, gnss_jsondata):

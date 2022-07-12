@@ -34,7 +34,7 @@ GSTAR_BAUDRATE = 4800
 GPS_DEVICE_VENDOR = GPS_DEVICE_VENDOR_GSTAR
 GPS_DEVICE_ID = GPS_DEVICE_ID_GSTAR
 GPS_BAUDRATE = GSTAR_BAUDRATE
-GPS_SENDING_FREQUENCY = 60 
+GPS_SENDING_FREQUENCY = 600 
 
 GPS_USB_PORT = "/dev/ttyUSB0"
 
@@ -92,7 +92,7 @@ async def main():
         if "telemetryConfig" in twin["desired"]:
             telemetry = twin["desired"]["telemetryConfig"]
             GPS_SENDING_FREQUENCY = int(telemetry["sendFrequency"])*60
-            logging.info(GPS_SENDING_FREQUENCY)
+            logging.info('{}:{}'.format("GNSS_SENDING_FREQUENCY", GPS_SENDING_FREQUENCY))
         else:
             logging.info(twin)
             logging.info("no telemetryConfig data")
@@ -105,8 +105,8 @@ async def main():
                 try:
                     data = await module_client.receive_twin_desired_properties_patch()  # blocking call
                     logging.info( "The data in the desired properties patch was: %s" % data)
-                    if data["desired"]["telemetryConfig"]:
-                         GPS_SENDING_FREQUENCY = int(data["desired"]["telemetryConfig"]["sendFrequency"])*60
+                    if data["telemetryConfig"]:
+                         GPS_SENDING_FREQUENCY = int(data["telemetryConfig"]["sendFrequency"])
                     TWIN_CALLBACKS += 1
                     print ( "Total calls confirmed: %d\n" % TWIN_CALLBACKS )
                 except Exception as ex:

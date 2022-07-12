@@ -2,6 +2,19 @@
 
 Azure IoT Edge project for Floats.
 
+1. Clone this repository
+2. Open the folder in VS Code
+3. Install Azure IoT Tools extension pack, Python 3.8 & other tools such as Docker
+4. Start writing modules & debugging
+5. Log in to azure registry for pushing images
+
+needs this before pushing images
+
+```
+az acr login --name aaltofloats
+```
+
+
 
 ## modules:
 
@@ -58,6 +71,23 @@ in /etc/docker/daemon.json
   }
 }
 ```
+
+
+### dead reckoning
+{
+  "ts":1550139427.6284137, timestamp since last press of "reset button"
+  "x":0.18743516047702605,
+  "y":0.01702104496847002,
+  "z":-0.05040616066696785,
+  "std":0.4355372321949996,
+  "roll":-0.9409523947358766, rotation around x axis
+  "pitch":1.092898383237629, rotation around y axis
+  "yaw":5.4970132268564225, rotation around z axis
+  "type":"position_local",
+  "status":0,
+  "format":"json_v2"
+}
+
 
 
 

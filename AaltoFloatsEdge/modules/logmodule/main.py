@@ -23,34 +23,32 @@ gnss_row_limit = 30 # limit the size of the  gnss csv log, could be as module tw
 gnss_row_cnt = 0
 
 NRO_GNSS_OF_MEASUREMENTS = 1000
+TWIN_CALLBACKS = 0
 
 def create_client():
     client = IoTHubModuleClient.create_from_edge_environment()
 
     # MESSAGES handing
-    # Define function for handling received messages from Edge modules
     async def receive_message_handler(message):
-        global to_gnss_csv, gnss_row_cnt, gnss_row_limit
+        global to_gnss_csv, gnss_row_cnt, gnss_row_limit, NRO_GNSS_OF_MEASUREMENTS
         # NOTE: This function only handles messages sent to "input1".
         # Messages sent to other inputs, or to the default, will be discarded
         if message.input_name == "input1":
-            #print("the data in the message received on input1 was ")
-            #print(message.data)
-            #print("custom properties are")
-            #print(message.custom_properties)
+            # logging.info('{}:{}'.format("message data", message.data))
 
             if message.custom_properties['type'] == "location":
-                if gnss_row_cnt < gnss_row_limit:
-                    print("storing message sensor values to logfile")
-                    json_data = json.loads(message.data)
-                    to_gnss_csv.write_csv_data(json_data) 
-                    gnss_row_cnt = gnss_row_cnt + 1
-                else:
-                    gnss_row_cnt = 0
+                logging.info("storing message sensor values to logfile")
+                if gnss_row_cnt >= NRO_GNSS_OF_MEASUREMENTS:
                     to_gnss_csv.close_csv_log()
-                    to_gnss_csv = gnss2csv_file('/app/logs') # new file
+                    to_gnss_csv = gnss2csv_file('/app/logs/') # new file
+                    gnss_row_cnt = 0
+                    
+                json_data = json.loads(message.data)
+                to_gnss_csv.write_csv_data(json_data) 
+                gnss_row_cnt = gnss_row_cnt + 1
             # not needed here
             # await client.send_message_to_output(message, "output1")
+
     
     # DIRECT METHOD handling  
     # Define behavior for receiving direct messages 
@@ -58,21 +56,19 @@ def create_client():
         global SENDING
         logging.info ("Direct Method handler - message")
         if method_request.name == "remove_all_logs":
-            logging.info("Received request for get_data")
+            logging.info("Received request for removing all type logs")
             method_response = MethodResponse.create_from_method_request(
-                method_request, 200, "some data"
-            )
+                method_request, 200, "remove data")
             await client.send_method_response(method_response)
 
-        if method_request.name == "remove_gnss_logs":
-            logging.info("Received request for get_data")
-            to_gnss_csv.files.delete_files("gnss")
+        elif method_request.name == "remove_gnss_logs":
+            logging.info("Received request for remove gnss logs")
+            to_gnss_csv.remove_old_logs("gnss")
             method_response = MethodResponse.create_from_method_request(
-                method_request, 200, "removed old local gnss log files"
-            )
+                method_request, 200, "removed old local gnss log files")
             await client.send_method_response(method_response)
 
-        if (method_request.name == "start_send"):
+        elif (method_request.name == "start_send"):
             logging.info("Received request for start_send")
             SENDING = True
             method_response = MethodResponse.create_from_method_request(
@@ -80,7 +76,7 @@ def create_client():
             )
             await client.send_method_response(method_response)
         
-        if (method_request.name == "stop_send"):
+        elif (method_request.name == "stop_send"):
             logging.info("Received request for stop_send")
             SENDING = False
             method_response = MethodResponse.create_from_method_request(
@@ -100,11 +96,10 @@ def create_client():
         global NRO_GNSS_OF_MEASUREMENTS
         while True:
             try:
-                module_client.r
                 data = await module_client.receive_twin_desired_properties_patch()  # blocking call
                 logging.info( "The data in the desired properties patch was: %s" % data)
-                if data["desired"]["telemetryConfig"]:
-                    NRO_GNSS_OF_MEASUREMENTS = int(data["desired"]["telemetryConfig"]["nroOfMeasurements"])
+                if data["telemetryConfig"]:
+                    NRO_GNSS_OF_MEASUREMENTS = int(data["telemetryConfig"]["nroOfMeasurements"])
                 TWIN_CALLBACKS += 1
                 logging.info('{}:{}'.format("Total calls confirmed", TWIN_CALLBACKS ))
             except Exception as ex:
