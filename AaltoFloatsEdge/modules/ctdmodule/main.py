@@ -191,11 +191,9 @@ def create_client():
         # NOTE: This function only handles messages sent to "input1".
         # Messages sent to other inputs, or to the default, will be discarded
         if message.input_name == "input1":
-            print("the data in the message received on input1 was ")
-            print(message.data)
-            print("custom properties are")
-            print(message.custom_properties)
-            print("forwarding mesage to output1")
+            logging.info("{}:{}".format("the data in the message received on input1 was ", message.data))
+            logging.info("{}:{}".format("custom properties are", message.custom_properties))
+            logging.info("forwarding mesage to output1")
             await client.send_message_to_output(message, "output1")
     
         # DIRECT METHOD handling  

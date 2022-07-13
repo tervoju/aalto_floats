@@ -8,11 +8,26 @@ import asyncio
 import sys
 import signal
 import threading
+
 from azure.iot.device.aio import IoTHubModuleClient
+from azure.iot.device import MethodResponse
+from azure.iot.device import Message
 
 
 # Event indicating client stop
 stop_event = threading.Event()
+
+# 
+# serial:///dev/ttyS1:B19200:8N1|<filters>
+
+# this is the device id connected through usb - serial convertion box
+# has to be connected to first plug
+# Bus 001 Device 004: ID 0403:6011 Future Technology Devices International, Ltd FT4232H Quad HS USB-UART/FIFO IC
+# ser = serial.Serial("/dev/ttyUSB2", baudrate=19200, timeout=0.5)
+EVO_PORT = "/dev/ttyUSB1"
+EVO_BAUDRATE = 19200
+EVO_TIMEOUT = 0.5
+global evo_ser
 
 
 def create_client():
