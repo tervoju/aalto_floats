@@ -47,6 +47,9 @@
             "settings": {
               "image": "mcr.microsoft.com/azureiotedge-hub:1.2",
               "createOptions": {
+                "ExposedPorts": {
+                  "9600/tcp": {}
+                },
                 "HostConfig": {
                   "PortBindings": {
                     "5671/tcp": [
@@ -62,6 +65,11 @@
                     "443/tcp": [
                       {
                         "HostPort": "443"
+                      }
+                    ],
+                    "9600/tcp": [
+                      {
+                          "HostPort": "9602"
                       }
                     ]
                   }

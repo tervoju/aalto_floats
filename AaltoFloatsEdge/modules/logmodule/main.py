@@ -92,19 +92,19 @@ def create_client():
         
     # TWIN PATCH handling
     # if the twin data is changed
-    async def receive_twin_patch_handler(module_client):
+    async def receive_twin_patch_handler(twin_patch):
         global TWIN_CALLBACKS
         global NRO_GNSS_OF_MEASUREMENTS
-        while True:
-            try:
-                data = await module_client.receive_twin_desired_properties_patch()  # blocking call
-                logging.info( "The data in the desired properties patch was: %s" % data)
-                if data["telemetryConfig"]:
-                    NRO_GNSS_OF_MEASUREMENTS = int(data["telemetryConfig"]["nroOfMeasurements"])
-                TWIN_CALLBACKS += 1
-                logging.info('{}:{}'.format("Total calls confirmed", TWIN_CALLBACKS ))
-            except Exception as ex:
-                print ( "Unexpected error in twin_patch_listener: %s" % ex )
+     
+        try:
+            logging.info( "The data in the desired properties patch was: %s" % twin_patch)
+            if "telemetryConfig" in twin_patch:
+                NRO_GNSS_OF_MEASUREMENTS = int(twin_patch["telemetryConfig"]["nroOfMeasurements"])
+                logging.info('{}:{}'.format("GNSS measurements", NRO_GNSS_OF_MEASUREMENTS ))
+            TWIN_CALLBACKS += 1
+            logging.info('{}:{}'.format("Total calls confirmed", TWIN_CALLBACKS ))
+        except Exception as ex:
+            logging.info('{}:{}'.format("Unexpected error in twin_patch_listener", ex ))
 
     try:
         # Set handler for messages

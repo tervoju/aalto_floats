@@ -15,16 +15,11 @@ https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-direct-methods
 
 # digital twins
 
-Device/module twins are JSON documents that store device state information, including metadata, configurations, and conditions. IoT Hub persists a device twin for each device that connects to it.
+Device/module twins are JSON documents that store device state information, including metadata, configurations, and conditions. IoT Hub persists a device twin for each Device and Edge modules that connects to it. Device/module twin data/settings is visible in Azure portal or in also possible to set the values in the Device Edge deployment json.
 
-Device/module twin data/settings is visible in Azure portal or in also in deployment json.
+Each module has 'Module Identity Twin' for twin settings as 'Tag', 'desired' and 'reported' twin data.
 
-Each module has 'Module Identity Twin' for twin settings as 'Tag', 'desired' and 'reported' twim data. 
-
-Note: device twin data has not been visible in modules, assuming this the case still.  
-
-
-below code to get digital twin data 
+Note: device twin data has not been visible in modules, assuming this the case still. For Edge Modules, you should use Module twin configurations.
 
 
 when starting module check module twin
@@ -40,6 +35,7 @@ when starting module check module twin
         logging.info("no telemetryConfig data")
 ```
 
+Callback for getting the changes in the digital twin values:
 
 ```
     async def receive_twin_patch_handler(module_client):
@@ -59,6 +55,8 @@ when starting module check module twin
 
 
 see some info from here
+
+https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-python-module?view=iotedge-2020-11
 
 https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-python-module?view=iotedge-2020-11&WT.mc_id=IoT-MVP-5002324
 

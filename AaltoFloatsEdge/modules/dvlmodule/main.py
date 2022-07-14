@@ -101,7 +101,7 @@ async def main():
         logging.info( "The dvl module TCP socket is connected ")
             
         # Schedule task for C2D Listener
-        listeners = asyncio.gather(listen.read_dvl())
+        listeners = asyncio.gather(listen.read_dvl(), twin_patch_listener(module_client))
         logging.info( "The dvlmodule is now waiting for messages from DVL A50. ")
 
         # Run the stdin listener in the event loop

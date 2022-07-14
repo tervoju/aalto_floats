@@ -99,4 +99,75 @@ format)
 
 
 
-###
+## local monitoring
+
+it is possible to see metrics locally with grafana and prometheus
+
+using grafana in docker 
+
+https://ducko.uk/installing-grafana-prometheus-via-docker-to-monitor-raspberry-pi-metrics/
+
+
+```
+ docker run -d -p 3000:3000 grafana/grafana-oss
+```
+
+expose edgehub and edgeagent ports
+
+e.g. edgeHub to 9602
+
+```
+"ExposedPorts": {
+    "9600/tcp": {}
+},
+"HostConfig": {
+    "PortBindings": {
+        "5671/tcp": [
+            {
+                "HostPort": "5671"
+            }
+        ],
+        "8883/tcp": [
+            {
+                "HostPort": "8883"
+            }
+        ],
+        "443/tcp": [
+            {
+                "HostPort": "443"
+            }
+        ],
+        "9600/tcp": [
+            {
+                "HostPort": "9602"
+            }
+        ]
+    }
+}
+```
+and after deplyment you can see e.g. in the same network
+
+http://192.168.8.104:9602/metrics
+
+```
+# HELP edgehub_messages_sent_total Messages sent from edge hub
+# TYPE edgehub_messages_sent_total counter
+# HELP edgehub_message_send_duration_seconds Time taken to send a message
+# TYPE edgehub_message_send_duration_seconds summary
+# HELP edgehub_queue_length Number of messages pending to be processed for the endpoint
+# TYPE edgehub_queue_length gauge
+edgehub_queue_length{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",endpoint="iothub",priority="2000000000",ms_telemetry="True"} 0
+edgehub_queue_length{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",endpoint="rasp4-trial/logmodule/input1",priority="2000000000",ms_telemetry="True"} 0
+# HELP edgehub_reported_properties_update_duration_seconds Time taken to update reported properties
+# TYPE edgehub_reported_properties_update_duration_seconds summary
+edgehub_reported_properties_update_duration_seconds_sum{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub"} 0.7779749
+edgehub_reported_properties_update_duration_seconds_count{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub"} 1
+edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub",quantile="0.1"} 0.7779749
+edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub",quantile="0.5"} 0.7779749
+edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub",quantile="0.9"} 0.7779749
+edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub",quantile="0.99"} 0.7779749
+```
+
+### prometheus installation & configuration
+
+https://www.petecodes.co.uk/configuring-and-visualising-iot-edge-metrics-using-prometheus-and-grafana/
