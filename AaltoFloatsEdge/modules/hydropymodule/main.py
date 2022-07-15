@@ -15,7 +15,7 @@ import uuid
 import random
 
 from azure.iot.device.aio import IoTHubModuleClient
-from prometheus_client import  start_http_server, Gauge
+from prometheus_client import start_http_server, Gauge
 
 # prometheus metrics variables 
 deviceId = os.environ["IOTEDGE_DEVICEID"]

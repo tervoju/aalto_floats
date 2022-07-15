@@ -79,7 +79,7 @@ and following setting for metrics collector module.
 ```
 
 
-### custom metrics
+### Custom metrics
 
 https://docs.microsoft.com/en-us/azure/iot-edge/how-to-add-custom-metrics?view=iotedge-2020-11
 
@@ -95,17 +95,64 @@ Following setting for metrics collector module. what is noteworthy is the format
 any module that needs to be checked for custom metrics needs to be added as endpoint to the string list (has to be in this
 format)
 
-#### python version to add custom modules
+### Python version to add custom modules custom 
+
+Example of simple custom metrics that can be send to azure iot hub
+
+```
+
+...
+from prometheus_client import start_http_server, Gauge
+
+# prometheus metrics variables 
+deviceId = os.environ["IOTEDGE_DEVICEID"]
+instanceNumber = str(uuid.uuid4())
+iothubHostname = os.environ["IOTEDGE_IOTHUBHOSTNAME"]
+moduleId = os.environ["IOTEDGE_MODULEID"]
+
+# Event indicating client stop
+stop_event = threading.Event()
+
+def get_cpu_temp():
+    tempFile = open( "/sys/class/thermal/thermal_zone0/temp" )
+    cpu_temp = tempFile.read()
+    tempFile.close()
+    return float(float(cpu_temp)/1000.0)
+    
+...
+
+async def run_module(client):
+    # Customize this coroutine to do whatever tasks the module initiates
+    global deviceId, instanceNumber, iothubHostname, moduleId
+    tempGauge = Gauge("temperature", "device temperature", ["deviceId", "instanceNumber", "iothubHostname", "moduleId"])
+
+    # Start up the server to expose the metrics.
+    start_http_server(9600)
+
+    # e.g. sending messages
+    while True:
+        tempGauge.labels(deviceId,instanceNumber,iothubHostname,moduleId).set(get_cpu_temp())
+        await asyncio.sleep(10)
+```
 
 
 
-## local monitoring
+# Local monitoring
 
-it is possible to see metrics locally with grafana and prometheus
+In addition to Azure IoT Edge logging and monitoring a local monitoring can be implemented by using Grafana and Prometheus  
+and both Grafana and Prometheus can be run as docker container
+
+
+### Grafana
 
 using grafana in docker 
 
 https://ducko.uk/installing-grafana-prometheus-via-docker-to-monitor-raspberry-pi-metrics/
+
+and specificly for Azure Iot Edge
+
+https://www.petecodes.co.uk/configuring-and-visualising-iot-edge-metrics-using-prometheus-and-grafana/
+
 
 
 ```
@@ -168,6 +215,78 @@ edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-de
 edgehub_reported_properties_update_duration_seconds{iothub="iothubvqc01.azure-devices.net",edge_device="rasp4-trial",instance_number="b0e77009-b239-4cc6-b04f-4825a75a032d",target="upstream",id="rasp4-trial/$edgeHub",quantile="0.99"} 0.7779749
 ```
 
-### prometheus installation & configuration
+### Prometheus installation & configuration
 
-https://www.petecodes.co.uk/configuring-and-visualising-iot-edge-metrics-using-prometheus-and-grafana/
+```
+docker pull prom/prometheus
+```
+
+https://prometheus.io/docs/prometheus/latest/installation/
+
+```
+docker run -p 9090:9090 prom/prometheus
+```
+
+configuration e.g.
+
+```
+
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval
+  evaluation_interval: 15s # Evaluate rules every 15 seconds
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+# according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>`
+  # to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+    - targets: ['localhost:9090']
+  #  - targets: ['192.168.1.99:9100']
+  #  - targets: ['192.168.1.100:9100']
+
+  - job_name: 'iotedge_agent'
+    static_configs:
+    - targets: ['192.168.8.104:9601']
+
+  - job_name: 'iotedge_hub'
+    static_configs:
+    - targets: ['192.168.8.104:9602']
+
+```
+
+and starting prometheus in docker container with the needed configuration
+
+```
+docker run -p 9090:9090 -v /home/pi/prometheus/Prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
+
+or you can do a custom image including config and prometheus 
+
+after the connection is working prometheus can added as data source to grafana and iot edge metrics should be visible in 
+grafana and various dashboards could be added based on the information
+
+
+or use some ready dashboards like 
+```
+https://grafana.com/grafana/dashboards/16377
+```
