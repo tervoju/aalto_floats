@@ -31,11 +31,11 @@
                   "PortBindings": {
                     "9600/tcp": [
                       {
-                          "HostPort": "9601"
+                        "HostPort": "9601"
                       }
                     ]
                   }
-                }  
+                }
               }
             },
             "env": {

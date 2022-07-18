@@ -104,3 +104,6 @@ Azure Monitor workbooks are customizable. You can edit the public templates to s
 
 To begin customizing a workbook, first enter editing mode. Select the Edit button in the menu bar of the workbook. Curated workbooks make extensive use of workbook groups. You may need to select Edit on several nested groups before being able to view a visualization query.
 
+
+# pigpio
+pip install pigpio

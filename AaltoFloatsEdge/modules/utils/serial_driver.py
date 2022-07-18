@@ -42,7 +42,7 @@ USB_DEVICE_ID = '2303'
 
 # /dev/ttyACM0 arduino - e.g- Bus 001 Device 004: ID 2341:005e Arduino SA USB2.0 Hub
 
-DEVICE_PORT = "/dev/ttyUSB1"
+DEVICE_PORT = "/dev/ttyUSB1"    
 DEVICE_BAUDRATE = 19200
 DEVICE_TIMEOUT = 0.5
 global device_ser

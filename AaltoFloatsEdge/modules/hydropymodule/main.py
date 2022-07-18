@@ -13,6 +13,7 @@ import threading
 import os
 import uuid
 import random
+import pigpio
 
 from azure.iot.device.aio import IoTHubModuleClient
 from prometheus_client import start_http_server, Gauge

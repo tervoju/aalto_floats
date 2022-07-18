@@ -1,0 +1,1 @@
+int getADCSamples(int argSamples, int argPause);
