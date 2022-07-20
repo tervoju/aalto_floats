@@ -13,7 +13,7 @@
               "aaltofloats": {
                 "username": "$CONTAINER_REGISTRY_USERNAME_aaltofloats",
                 "password": "$CONTAINER_REGISTRY_PASSWORD_aaltofloats",
-                "address": "aaltofloats.azurecr.io"
+                "address": "$CONTAINER_REGISTRY_ADDRESS_aaltofloats"
               }
             }
           }
@@ -87,68 +87,10 @@
                 "HostConfig": {
                   "Privileged": true,
                   "Binds": [
-                    "/home/pi/logs:/app/logs"
+                    "/home/pi/logs:/app/logs",
+                    "/home/pi/hydro:/app/hydro"
                   ],
                   "NetworkMode": "host"
-                }
-              }
-            }
-          },
-          "IoTEdgeMetricsCollector": {
-            "settings": {
-              "image": "mcr.microsoft.com/azureiotedge-metrics-collector:1.0",
-              "createOptions": ""
-            },
-            "type": "docker",
-            "env": {
-              "ResourceId": {
-                "value": "$AZURE_IOTHUB_RESOURCE_ID"
-              },
-              "UploadTarget": {
-                "value": "$AZURE_UPLOAD_TARGET"
-              },
-              "LogAnalyticsWorkspaceId": {
-                "value": "$AZURE_WORKSPACE_ID"
-              },
-              "LogAnalyticsSharedKey": {
-                "value": "$AZURE_PRIMARY_KEY"
-              }
-            },
-            "status": "running",
-            "restartPolicy": "always",
-            "version": "1.0"
-          },
-          "azureblobstorageoniotedge": {
-            "settings": {
-              "image": "mcr.microsoft.com/azure-blob-storage",
-              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/home/blob:/blobroot\"],\"PortBindings\":{\"11002/tcp\":[{\"HostPort\":\"11002\"}]}}}"
-            },
-            "type": "docker",
-            "env": {
-              "LOCAL_STORAGE_ACCOUNT_NAME": {
-                "value": "$LOCAL_STORAGE_ACCOUNT_NAME"
-              },
-              "LOCAL_STORAGE_ACCOUNT_KEY": {
-                "value": "$LOCAL_STORAGE_ACCOUNT_KEY"
-              }
-            },
-            "status": "running",
-            "restartPolicy": "always",
-            "version": "1.0"
-          },
-          "logmodule": {
-            "version": "1.0",
-            "type": "docker",
-            "status": "running",
-            "restartPolicy": "always",
-            "settings": {
-              "image": "${MODULES.logmodule}",
-              "createOptions": {
-                "HostConfig": {
-                  "Privileged": true,
-                  "Binds": [
-                    "/home/pi/logs:/app/logs"
-                  ]
                 }
               }
             }
@@ -160,26 +102,10 @@
       "properties.desired": {
         "schemaVersion": "1.1",
         "routes": {
-          "hydroModuleToIoTHub": "FROM /messages/modules/hydromodule/outputs/* INTO $upstream",
-          "hydroTologmodule": "FROM /messages/modules/hydromodule/outputs/* INTO BrokeredEndpoint(\"/modules/logmodule/inputs/input1\")"
+          "hydronmoduleToIoTHub": "FROM /messages/modules/hydromodule/outputs/* INTO $upstream"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
-        }
-      }
-    },
-    "azureblobstorageoniotedge": {
-      "properties.desired": {
-        "deviceAutoDeleteProperties": {
-          "deleteOn": true,
-          "deleteAfterMinutes": 30,
-          "retainWhileUploading": true
-        },
-        "deviceToCloudUploadProperties": {
-          "uploadOn": true,
-          "uploadOrder": "OldestFirst",
-          "cloudStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=$AZURE_STORAGE_ACCOUNT_NAME;AccountKey=$AZURE_STORAGE_ACCOUNT_KEY;EndpointSuffix=$ENDPOINT_SUFFIX",
-          "deleteAfterUpload": true
         }
       }
     }

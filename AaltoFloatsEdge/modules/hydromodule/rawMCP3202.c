@@ -24,6 +24,7 @@ https://forums.raspberrypi.com/viewtopic.php?t=71089
 #include <stdlib.h>
 #include <unistd.h>
 #include <pigpio.h>
+#include "rawMCP3202.h"
 
 #define SPI_SS 24 // GPIO for slave select.
 #define ADCS 4    // Number of connected MCP3202.

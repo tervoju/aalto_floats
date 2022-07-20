@@ -39,6 +39,7 @@ find_library(pigpiod_if2_LIBRARY
 set(pigpio_INCLUDE_DIRS ${pigpio_INCLUDE_DIR})
 set(pigpio_INCLUDES     ${pigpio_INCLUDE_DIR})
 
+
 # Handle REQUIRED, QUIET, and version arguments 
 # and set the <packagename>_FOUND variable.
 include(FindPackageHandleStandardArgs)
@@ -56,7 +57,7 @@ include_directories(${AZUREIOT_INC_FOLDER})
 
 set(main_c_files
     ./main.c
-    ./rawMCP3202.c
+#    ./rawMCP3202.c
 )
 
 add_executable(main ${main_c_files})
@@ -76,5 +77,5 @@ target_link_libraries(main
     crypto
     m
     uuid
-    pigpio
+#    pigpio
 )

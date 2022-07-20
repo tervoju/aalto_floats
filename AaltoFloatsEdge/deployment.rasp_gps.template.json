@@ -158,13 +158,13 @@
               }
             }
           },
-          "hydropymodule": {
+          "hydrocmodule": {
             "version": "1.0",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.hydropymodule}",
+              "image": "${MODULES.hydrocmodule}",
               "createOptions": {}
             }
           }

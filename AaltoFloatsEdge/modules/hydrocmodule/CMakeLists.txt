@@ -54,7 +54,7 @@ set(AZUREIOT_INC_FOLDER "/usr/include/azureiot" "/usr/include/azureiot/inc")
 include_directories(${AZUREIOT_INC_FOLDER})
 
 set(main_c_files
-    ./main.c ./rawMCP3202.c
+    ./main.c 
 )
 
 add_executable(main ${main_c_files})

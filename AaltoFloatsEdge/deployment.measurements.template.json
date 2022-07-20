@@ -234,6 +234,16 @@
               "image": "${MODULES.hydropymodule}",
               "createOptions": {}
             }
+          },
+          "hydrocmodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.hydrocmodule}",
+              "createOptions": {}
+            }
           }
         }
       }

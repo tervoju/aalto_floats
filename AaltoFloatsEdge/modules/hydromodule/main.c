@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pigpio.h>
+//#include <pigpio.h>
 
 #include "iothub_module_client_ll.h"
 #include "iothub_client_options.h"
@@ -16,7 +16,7 @@
 #include "iothubtransportmqtt.h"
 #include "iothub.h"
 #include "time.h"
-#include "rawMCP3202.h"
+//#include "rawMCP3202.h"
 
 typedef struct MESSAGE_INSTANCE_TAG
 {
@@ -174,7 +174,7 @@ void iothub_module()
         while (true)
         {
             IoTHubModuleClient_LL_DoWork(iotHubModuleClientHandle);
-            getADCSamples(2000000, 0);
+            //getADCSamples(2000000, 0);
             ThreadAPI_Sleep(100);
         }
     }

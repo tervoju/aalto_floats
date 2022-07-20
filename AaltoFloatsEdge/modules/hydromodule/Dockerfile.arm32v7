@@ -11,7 +11,6 @@ RUN apt-get update && \
     apt-get install -y apt-utils && \
     apt-get install -y unzip && \
     apt-get install -y azure-iot-sdk-c-dev && \
-
     rm -rf /var/lib/apt/lists/*
 
 FROM base AS build-env
@@ -21,6 +20,7 @@ RUN apt-get update && \
     apt install -y python3.7 && \
     apt install -y python3.7-distutils && \
     apt install -y python3-pip && \ 
+    apt install -y python-setuptools python3-setuptools && \
     rm -rf /var/lib/apt/lists/* 
 
 RUN wget https://github.com/joan2937/pigpio/archive/master.zip
@@ -37,6 +37,7 @@ RUN make
 FROM base
 WORKDIR /app
 COPY --from=build-env /app ./
+RUN mkdir logs
 RUN useradd -ms /bin/bash moduleuser
 USER moduleuser
 CMD ["./main"]
