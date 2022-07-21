@@ -94,6 +94,31 @@
                 }
               }
             }
+          },
+          "hydronativemodule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULES.hydronativemodule}",
+              "createOptions": {
+                "NetworkingConfig": {
+                  "EndpointsConfig": {
+                    "host": {}
+                  }
+                },
+                "HostConfig": {
+                  "Privileged": true,
+                  "Binds": [
+                    "/home/pi/logs:/app/logs",
+                    "/home/pi/hydro:/app/hydro",
+                    "/dev:/dev"
+                  ],
+                  "NetworkMode": "host"
+                }
+              }
+            }
           }
         }
       }

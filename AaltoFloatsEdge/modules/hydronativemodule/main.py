@@ -25,6 +25,12 @@ def get_ADC_samples(samples, pause):
     so = os.popen(cmd).read()
     print(so)
 
+
+def test_raw():
+    cmd = '/app/hydro/testraw 2000000 0'
+    so = os.popen(cmd).read()
+    print(so)
+
 def remove_old_logs(type):
     global LOG_PATH
     log_files = LOG_PATH 
@@ -123,7 +129,9 @@ async def run_hydro(client):
     # Customize this coroutine to do whatever tasks the module initiates
     # e.g. sending messages
     while True:
+
         get_ADC_samples(NRO_ADC_OF_MEASUREMENTS, PAUSE)
+        test_raw()
         await asyncio.sleep(1000)
 
 

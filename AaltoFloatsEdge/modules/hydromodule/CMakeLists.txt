@@ -57,7 +57,7 @@ include_directories(${AZUREIOT_INC_FOLDER})
 
 set(main_c_files
     ./main.c
-#    ./rawMCP3202.c
+    ./rawMCP3202.c
 )
 
 add_executable(main ${main_c_files})
@@ -77,5 +77,5 @@ target_link_libraries(main
     crypto
     m
     uuid
-#    pigpio
+    pigpio
 )
