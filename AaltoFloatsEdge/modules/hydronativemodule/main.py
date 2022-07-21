@@ -10,6 +10,7 @@ import threading
 from azure.iot.device.aio import IoTHubModuleClient
 
 import logging
+import subprocess
 
 # Event indicating client stop
 stop_event = threading.Event()
@@ -21,9 +22,14 @@ NRO_ADC_OF_MEASUREMENTS = 2000000
 LOG_PATH = '/app/logs/'
 
 def get_ADC_samples(samples, pause):
-    cmd = '/app/hydro/rawMCP3202 2000000 0'
-    so = os.popen(cmd).read()
-    print(so)
+    cmd = '/home/pi/hydro/rawMCP3202 200000 0'
+    #so = os.popen(cmd).read()
+    #print(so)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    p_status = p.wait()
+    (output, err) = p.communicate()
+    print("Command output : ", output)
+    print("Command exit status/return code : ", p_status)
 
 
 def test_raw():
@@ -129,9 +135,7 @@ async def run_hydro(client):
     # Customize this coroutine to do whatever tasks the module initiates
     # e.g. sending messages
     while True:
-
         get_ADC_samples(NRO_ADC_OF_MEASUREMENTS, PAUSE)
-        test_raw()
         await asyncio.sleep(1000)
 
 
